@@ -1,0 +1,72 @@
+import kotlinx.datetime.Instant;
+
+CREATE TABLE habit_entity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    icon TEXT NOT NULL,
+    color INTEGER NOT NULL,
+    goalValue INTEGER NOT NULL,
+    goalUnit TEXT NOT NULL,
+    frequency TEXT NOT NULL, -- Hàng ngày, Tùy chỉnh, Ngày cụ thể
+    repeatDays TEXT, -- "1,2,3,4,5,6,7"
+    reminderTime TEXT,
+    startTime TEXT, -- Thời gian bắt đầu (HH:mm)
+    endTime TEXT,   -- Thời gian kết thúc (HH:mm)
+    habitType TEXT NOT NULL, -- BUILD, QUIT
+    createdAt INTEGER NOT NULL
+);
+
+CREATE TABLE habit_completion (
+    habitId INTEGER NOT NULL,
+    completedDate TEXT NOT NULL, -- ISO date YYYY-MM-DD
+    progressValue INTEGER NOT NULL,
+    PRIMARY KEY (habitId, completedDate)
+);
+
+CREATE TABLE habit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    habitId INTEGER NOT NULL,
+    actionTime INTEGER NOT NULL, -- Timestamp of action
+    targetDate TEXT NOT NULL,    -- Date the progress was applied to (YYYY-MM-DD)
+    delta INTEGER NOT NULL,      -- +1 or -1
+    newValue INTEGER NOT NULL
+);
+
+getAllHabits:
+SELECT * FROM habit_entity ORDER BY createdAt DESC;
+
+getHabitById:
+SELECT * FROM habit_entity WHERE id = ?;
+
+insertHabit:
+INSERT OR REPLACE INTO habit_entity(id, name, icon, color, goalValue, goalUnit, frequency, repeatDays, reminderTime, startTime, endTime, habitType, createdAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteHabit:
+DELETE FROM habit_entity WHERE id = ?;
+
+getCompletionByDate:
+SELECT * FROM habit_completion WHERE completedDate = ?;
+
+getCompletionForHabitByDate:
+SELECT * FROM habit_completion WHERE habitId = ? AND completedDate = ?;
+
+getCompletionHistoryForHabit:
+SELECT * FROM habit_completion WHERE habitId = ? ORDER BY completedDate ASC;
+
+insertCompletion:
+INSERT OR REPLACE INTO habit_completion(habitId, completedDate, progressValue)
+VALUES (?, ?, ?);
+
+deleteCompletion:
+DELETE FROM habit_completion WHERE habitId = ? AND completedDate = ?;
+
+insertLog:
+INSERT INTO habit_log(habitId, actionTime, targetDate, delta, newValue)
+VALUES (?, ?, ?, ?, ?);
+
+getLogsForHabit:
+SELECT * FROM habit_log WHERE habitId = ? ORDER BY actionTime DESC;
+
+deleteLogsForHabit:
+DELETE FROM habit_log WHERE habitId = ?;
