@@ -10,14 +10,14 @@ import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HabitHomeTopBar() {
+fun HabitHomeTopBar(onMenuClick: () -> Unit) {
     CenterAlignedTopAppBar(
         title = {
             Text("Hôm nay", fontWeight = FontWeight.Bold)
         },
         navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Menu, contentDescription = null)
+            IconButton(onClick = onMenuClick) {
+                Icon(Icons.Default.Menu, contentDescription = "Mở menu")
             }
         },
         actions = {

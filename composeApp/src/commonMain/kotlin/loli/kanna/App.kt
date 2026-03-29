@@ -19,13 +19,12 @@ fun App() {
     var startScreen by remember { mutableStateOf<Screen?>(null) }
 
     LaunchedEffect(Unit) {
-        startScreen = HabitHomeScreen()
-//        val token = getAccessTokenUseCase.execute(Unit)
-//        if (token != null && token.isNotEmpty()) {
-//            startScreen = HabitScreen()
-//        } else {
-//            startScreen = LoginScreen()
-//        }
+        val token = getAccessTokenUseCase.execute(Unit)
+        if (token != null && token.isNotEmpty()) {
+            startScreen = HabitHomeScreen()
+        } else {
+            startScreen = LoginScreen()
+        }
     }
 
     MaterialTheme {

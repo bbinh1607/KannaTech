@@ -97,13 +97,14 @@ class MainActivity : ComponentActivity() {
                             description = "Để nhắc nhở thói quen đúng giây, ứng dụng cần quyền 'Báo thức & nhắc nhở'. Hãy cấp quyền trong màn hình tiếp theo.",
                             onGrantClick = {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    val intent = Intent(
-                                        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-                                        Uri.parse("package:$packageName")
-                                    )
+                                    val intent =
+                                        Intent(
+                                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                            Uri.parse("package:$packageName"),
+                                        )
                                     startActivity(intent)
                                 }
-                            }
+                            },
                         )
                     } else if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         PermissionRequestScreen(
@@ -129,8 +130,13 @@ class MainActivity : ComponentActivity() {
             var hasNotificationPermission by remember {
                 mutableStateOf(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    } else true
+                        ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.POST_NOTIFICATIONS,
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } else {
+                        true
+                    },
                 )
             }
             var hasExactAlarmPermission by remember {
@@ -138,7 +144,9 @@ class MainActivity : ComponentActivity() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                         alarmManager.canScheduleExactAlarms()
-                    } else true
+                    } else {
+                        true
+                    },
                 )
             }
 
@@ -149,7 +157,11 @@ class MainActivity : ComponentActivity() {
                             title = "Cần quyền hiển thị",
                             description = "Để hiển thị lời nhắc trên màn hình khóa, ứng dụng cần quyền 'Hiển thị trên các ứng dụng khác'.",
                             onGrantClick = {
-                                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                                val intent =
+                                    Intent(
+                                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                        Uri.parse("package:$packageName"),
+                                    )
                                 startActivity(intent)
                             },
                         )
@@ -159,10 +171,14 @@ class MainActivity : ComponentActivity() {
                             description = "Để nhắc nhở thói quen đúng giây, ứng dụng cần quyền 'Báo thức & nhắc nhở'.",
                             onGrantClick = {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName"))
+                                    val intent =
+                                        Intent(
+                                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                                            Uri.parse("package:$packageName"),
+                                        )
                                     startActivity(intent)
                                 }
-                            }
+                            },
                         )
                     } else if (!hasNotificationPermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         PermissionRequestScreen(
@@ -171,7 +187,11 @@ class MainActivity : ComponentActivity() {
                             onGrantClick = {
                                 // Trong onResume, việc xin quyền runtime qua launcher có thể hơi phức tạp,
                                 // tốt nhất là hướng người dùng vào Setting nếu họ đã từ chối.
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName"))
+                                val intent =
+                                    Intent(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.parse("package:$packageName"),
+                                    )
                                 startActivity(intent)
                             },
                         )
