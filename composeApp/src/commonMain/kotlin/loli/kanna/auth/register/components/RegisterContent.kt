@@ -5,7 +5,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import loli.kanna.auth.register.RegisterAction
 import loli.kanna.auth.register.RegisterState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterContent(
     state: RegisterState,
@@ -29,137 +27,171 @@ fun RegisterContent(
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Đăng ký tài khoản") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
+    Scaffold { innerPadding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 24.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center,
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "Tạo tài khoản!",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
 
-            Text(
-                text = "Tạo tài khoản mới",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.align(Alignment.Start)
-            )
+                Text(
+                    text = "Đăng ký để bắt đầu hành trình của bạn",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 32.dp),
+                )
 
-            // Name
-            OutlinedTextField(
-                value = state.name,
-                onValueChange = { onAction(RegisterAction.NameChanged(it)) },
-                label = { Text("Họ và tên") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                isError = state.nameError != null,
-                supportingText = { state.nameError?.let { Text(it) } },
-                singleLine = true
-            )
+                // USERNAME
+                OutlinedTextField(
+                    value = state.email,
+                    onValueChange = { onAction(RegisterAction.EmailChanged(it)) },
+                    label = { Text("Email") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
+                    isError = state.emailError != null,
+                    supportingText = { state.emailError?.let { Text(it) } },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    singleLine = true,
+                )
 
-            // Email
-            OutlinedTextField(
-                value = state.email,
-                onValueChange = { onAction(RegisterAction.EmailChanged(it)) },
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                isError = state.emailError != null,
-                supportingText = { state.emailError?.let { Text(it) } },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Phone
-            OutlinedTextField(
-                value = state.phone,
-                onValueChange = { onAction(RegisterAction.PhoneChanged(it)) },
-                label = { Text("Số điện thoại") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
-                isError = state.phoneError != null,
-                supportingText = { state.phoneError?.let { Text(it) } },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                singleLine = true
-            )
+                OutlinedTextField(
+                    value = state.username,
+                    onValueChange = { onAction(RegisterAction.UsernameChanged(it)) },
+                    label = { Text("Tên đăng nhập") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+                    isError = state.usernameError != null,
+                    supportingText = { state.usernameError?.let { Text(it) } },
+                    singleLine = true,
+                )
 
-            // Address
-            OutlinedTextField(
-                value = state.address,
-                onValueChange = { onAction(RegisterAction.AddressChanged(it)) },
-                label = { Text("Địa chỉ") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
-                isError = state.addressError != null,
-                supportingText = { state.addressError?.let { Text(it) } },
-                singleLine = true
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Password
-            OutlinedTextField(
-                value = state.password,
-                onValueChange = { onAction(RegisterAction.PasswordChanged(it)) },
-                label = { Text("Mật khẩu") },
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = null
+                OutlinedTextField(
+                    value = state.password,
+                    onValueChange = { onAction(RegisterAction.PasswordChanged(it)) },
+                    label = { Text("Mật khẩu") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    isError = state.passwordError != null,
+                    supportingText = { state.passwordError?.let { Text(it) } },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    singleLine = true,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // PHONE
+                OutlinedTextField(
+                    value = state.phone,
+                    onValueChange = { onAction(RegisterAction.PhoneChanged(it)) },
+                    label = { Text("Số điện thoại") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
+                    isError = state.phoneError != null,
+                    supportingText = { state.phoneError?.let { Text(it) } },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    singleLine = true,
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // ADDRESS
+                OutlinedTextField(
+                    value = state.address,
+                    onValueChange = { onAction(RegisterAction.AddressChanged(it)) },
+                    label = { Text("Địa chỉ") },
+                    modifier = Modifier.fillMaxWidth(),
+                    leadingIcon = { Icon(Icons.Default.LocationOn, contentDescription = null) },
+                    isError = state.addressError != null,
+                    supportingText = { state.addressError?.let { Text(it) } },
+                    singleLine = true,
+                )
+
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                // IMAGE URL (UUID)
+//                OutlinedTextField(
+//                    value = state.imageUrl,
+//                    onValueChange = { onAction(RegisterAction.ImageUrlChanged(it)) },
+//                    label = { Text("ID ảnh (UUID)") },
+//                    modifier = Modifier.fillMaxWidth(),
+//                    leadingIcon = { Icon(Icons.Default.Image, contentDescription = null) },
+//                    singleLine = true,
+//                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // PASSWORD
+
+
+                // ERROR
+                if (state.registerError != null) {
+                    Text(
+                        text = state.registerError,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // BUTTON
+                Button(
+                    onClick = { onAction(RegisterAction.OnRegisterClick) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    enabled = !state.isLoading,
+                    shape = MaterialTheme.shapes.medium,
+                ) {
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.dp,
+                        )
+                    } else {
+                        Text(
+                            "Đăng ký",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
                         )
                     }
-                },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                isError = state.passwordError != null,
-                supportingText = { state.passwordError?.let { Text(it) } },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true
-            )
+                }
 
-            if (state.registerError != null) {
-                Text(
-                    text = state.registerError,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { onAction(RegisterAction.OnRegisterClick) },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                enabled = !state.isLoading,
-                shape = MaterialTheme.shapes.large
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text("Đăng ký", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                TextButton(onClick = onBackClick) {
+                    Text("Đã có tài khoản? Đăng nhập ngay")
                 }
             }
-
-            TextButton(onClick = onBackClick) {
-                Text("Đã có tài khoản? Đăng nhập ngay")
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

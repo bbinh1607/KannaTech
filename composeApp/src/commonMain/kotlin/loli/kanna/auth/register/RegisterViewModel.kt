@@ -20,8 +20,8 @@ class RegisterViewModel(
 
     fun onAction(action: RegisterAction) {
         when (action) {
-            is RegisterAction.NameChanged -> {
-                _state.update { it.copy(name = action.name, nameError = null) }
+            is RegisterAction.UsernameChanged -> {
+                _state.update { it.copy(username = action.username, usernameError = null) }
             }
 
             is RegisterAction.EmailChanged -> {
@@ -30,6 +30,10 @@ class RegisterViewModel(
 
             is RegisterAction.PasswordChanged -> {
                 _state.update { it.copy(password = action.password, passwordError = null) }
+            }
+
+            is RegisterAction.ImageUrlChanged -> {
+                _state.update { it.copy(imageUrl = action.imageUrl) }
             }
 
             is RegisterAction.AddressChanged -> {
@@ -45,7 +49,6 @@ class RegisterViewModel(
             }
 
             RegisterAction.OnBackClick -> {
-                // Thường xử lý ở UI
             }
         }
     }
@@ -56,7 +59,7 @@ class RegisterViewModel(
                 it.copy(
                     isLoading = true,
                     registerError = null,
-                    nameError = null,
+                    usernameError = null,
                     emailError = null,
                     passwordError = null,
                     phoneError = null,
@@ -66,11 +69,12 @@ class RegisterViewModel(
 
             val params =
                 RegisterParams(
-                    name = _state.value.name,
+                    username = _state.value.username,
                     email = _state.value.email,
                     password = _state.value.password,
-                    address = _state.value.address,
-                    phone = _state.value.phone,
+                    imageUrl = _state.value.imageUrl.ifBlank { null },
+                    address = _state.value.address.ifBlank { null },
+                    phone = _state.value.phone.ifBlank { null },
                 )
 
             when (val result = authRegisterUseCase.execute(params)) {
@@ -84,7 +88,7 @@ class RegisterViewModel(
 
                     when (error) {
                         is AppError.Validation -> {
-                            _state.update { it.copy(registerError = error.message) }
+                            handleValidationError(error)
                         }
 
                         is AppError.Network -> {
@@ -101,6 +105,15 @@ class RegisterViewModel(
                     _state.update { it.copy(isLoading = false) }
                 }
             }
+        }
+    }
+
+    private fun handleValidationError(error: AppError.Validation) {
+        when (error.field) {
+            "username" -> _state.update { it.copy(usernameError = error.message) }
+            "email" -> _state.update { it.copy(emailError = error.message) }
+            "password" -> _state.update { it.copy(passwordError = error.message) }
+            else -> _state.update { it.copy(registerError = error.message) }
         }
     }
 }

@@ -5,14 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthRegisterRequest(
-    @SerialName("name")
-    val name: String,
+    @SerialName("username")
+    val username: String,
+    @SerialName("password")
+    val password: String,
+    @SerialName("image_url")
+    val imageUrl: String? = null,
     @SerialName("email")
     val email: String,
-    @SerialName("pass")
-    val password: String,
-    @SerialName("address")
-    val address: String? = null,
     @SerialName("phone")
     val phone: String? = null,
+    @SerialName("address")
+    val address: String? = null,
 )

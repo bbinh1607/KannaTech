@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
@@ -28,9 +29,11 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import loli.kanna.auth.login.LoginScreen
+import loli.kanna.devicemanagement.ui.DeviceDashboardScreen
 import loli.kanna.jobtracker.presentation.habit.create.CreateHabitScreen
 import loli.kanna.jobtracker.presentation.habit.detail.HabitDetailScreen
 import loli.kanna.jobtracker.presentation.habit.home.components.*
+import loli.kanna.profile.ProfileScreen
 import org.koin.compose.koinInject
 import kotlin.time.Clock
 
@@ -53,12 +56,6 @@ class HabitHomeScreen : Screen {
                 .now()
                 .toLocalDateTime(TimeZone.currentSystemDefault())
                 .date
-        val dateText =
-            if (state.selectedDate == today) {
-                "ngày hôm nay"
-            } else {
-                "ngày ${state.selectedDate.dayOfMonth}/${state.selectedDate.monthNumber}/${state.selectedDate.year}"
-            }
 
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -82,8 +79,24 @@ class HabitHomeScreen : Screen {
                     NavigationDrawerItem(
                         label = { Text("Hồ sơ") },
                         selected = false,
-                        onClick = { /* Navigate to Profile */ },
+                        onClick = { 
+                            scope.launch { 
+                                drawerState.close()
+                                navigator.push(ProfileScreen())
+                            } 
+                        },
                         icon = { Icon(Icons.Default.Person, null) },
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Quản lý thiết bị") },
+                        selected = false,
+                        onClick = { 
+                            scope.launch { 
+                                drawerState.close()
+                                navigator.push(DeviceDashboardScreen())
+                            } 
+                        },
+                        icon = { Icon(Icons.Default.Devices, null) },
                     )
                     NavigationDrawerItem(
                         label = { Text("Cài đặt") },

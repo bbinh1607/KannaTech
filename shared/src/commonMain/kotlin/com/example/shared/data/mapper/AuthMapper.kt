@@ -21,9 +21,10 @@ class AuthMapper {
 
     fun fromRegisterParams(params: RegisterParams): AuthRegisterRequest =
         AuthRegisterRequest(
-            name = params.name,
+            username = params.username,
             email = params.email,
             password = params.password,
+            imageUrl = params.imageUrl,
             address = params.address,
             phone = params.phone,
         )
@@ -31,25 +32,30 @@ class AuthMapper {
     // ===== RESPONSE → ENTITY =====
 
     fun toTokenEntity(response: AuthTokenResponse): TokenEntity =
-        TokenEntity(
+        AuthTokenResponse(
             accessToken = response.accessToken,
             refreshToken = response.refreshToken,
-        )
+        ).let {
+            TokenEntity(
+                accessToken = it.accessToken,
+                refreshToken = it.refreshToken,
+            )
+        }
 
     fun toUserEntity(response: UserResponse): UserEntity =
         UserEntity(
-            id = response.id,
-            name = response.name,
-            email = response.email,
+            id = response.id ?: "",
+            name = response.username, // Sử dụng username làm name vì server không trả về trường name
+            email = response.email ?: "",
             password = response.password,
             address = response.address ?: "",
             phone = response.phone ?: "",
             role =
                 RoleEntity(
-                    id = response.role.id,
-                    name = response.role.name,
-                    rank = response.role.rank,
-                    description = response.role.description ?: "",
+                    id = response.role?.id ?: "",
+                    name = response.role?.name ?: "guest",
+                    rank = response.role?.rank ?: 0,
+                    description = response.role?.description ?: "",
                 ),
         )
 }

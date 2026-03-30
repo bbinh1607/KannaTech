@@ -16,8 +16,6 @@ class PasswordValidator :
         listOf(
             NotEmptyRule,
             MinLengthRule(6),
-            HasUpperCaseRule,
-            HasDigitRule,
         ),
     ) {
     operator fun invoke(value: String) = validate(value)
@@ -33,6 +31,16 @@ class EmailValidator :
     operator fun invoke(value: String) = validate(value)
 }
 
+class UsernameValidator :
+    BaseValidator(
+        listOf(
+            NotEmptyRule,
+            MinLengthRule(3),
+        ),
+    ) {
+    operator fun invoke(value: String) = validate(value)
+}
+
 class NameValidator :
     BaseValidator(
         listOf(
@@ -41,4 +49,3 @@ class NameValidator :
     ) {
     operator fun invoke(value: String) = validate(value)
 }
-

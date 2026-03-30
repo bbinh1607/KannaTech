@@ -60,9 +60,9 @@ class KtorClient(
             }
 
             install(HttpTimeout) {
-                requestTimeoutMillis = 15_000
-                connectTimeoutMillis = 10_000
-                socketTimeoutMillis = 15_000
+                requestTimeoutMillis = 30_000 // Tăng lên 30 giây
+                connectTimeoutMillis = 30_000
+                socketTimeoutMillis = 30_000
             }
 
             defaultRequest {

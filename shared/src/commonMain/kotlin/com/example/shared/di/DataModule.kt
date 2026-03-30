@@ -4,13 +4,17 @@ import com.example.shared.data.dataSource.local.TokenLocalDataSource
 import com.example.shared.data.dataSource.local.TokenLocalDataSourceImpl
 import com.example.shared.data.dataSource.remote.AuthRemoteDataSource
 import com.example.shared.data.dataSource.remote.AuthRemoteDataSourceImpl
+import com.example.shared.data.dataSource.remote.DeviceRemoteDataSource
+import com.example.shared.data.dataSource.remote.DeviceRemoteDataSourceImpl
 import com.example.shared.data.dataSource.remote.KtorClient
 import com.example.shared.data.mapper.AuthMapper
 import com.example.shared.data.repository.HabitRepositoryImpl
 import com.example.shared.data.repositoryImpl.AuthRepositoryImpl
+import com.example.shared.data.repositoryImpl.DeviceRepositoryImpl
 import com.example.shared.data.repositoryImpl.local.TokenRepositoryImpl
 import com.example.shared.db.createDatabase
 import com.example.shared.domain.repository.AuthRepository
+import com.example.shared.domain.repository.DeviceRepository
 import com.example.shared.domain.repository.HabitRepository
 import com.example.shared.domain.repository.local.TokenRepository
 import com.example.shared.domain.usecase.auth.AuthLoginUseCase
@@ -31,15 +35,19 @@ val dataModule =
         single<TokenRepository> { TokenRepositoryImpl(get()) }
 
         single<AuthRemoteDataSource> { AuthRemoteDataSourceImpl(get()) }
+        
+        single<DeviceRemoteDataSource> { DeviceRemoteDataSourceImpl(get()) }
 
         single { AuthMapper() }
 
         single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
+        
+        single<DeviceRepository> { DeviceRepositoryImpl(get()) }
 
         // SQLDelight
         single { createDatabase(get()) }
         
-        // Habit Repository - Đã truyền thêm get() để Koin tự động tìm ReminderManager
+        // Habit Repository
         single<HabitRepository> { HabitRepositoryImpl(get(), get()) }
 
         factory { AuthLoginUseCase(get()) }
