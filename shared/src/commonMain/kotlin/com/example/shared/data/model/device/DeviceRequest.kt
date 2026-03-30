@@ -44,7 +44,7 @@ data class ComponentDetailCreateRequest(
     @SerialName("expirationDate")
     val expirationDate: String? = null,
     @SerialName("price")
-    val price: Double? = null
+    val price: Double
 )
 
 @Serializable

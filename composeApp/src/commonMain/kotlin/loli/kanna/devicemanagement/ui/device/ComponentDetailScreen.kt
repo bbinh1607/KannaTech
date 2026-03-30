@@ -125,9 +125,7 @@ class ComponentDetailScreen(
                                 detail = detail,
                                 onEdit = {
                                     selectedDetailForEdit = detail
-                                    detail.component?.deviceId?.let {
-                                        viewModel.getAllDeviceDetails()
-                                    }
+                                    viewModel.getAllDeviceDetails()
                                 },
                             )
                         }
@@ -341,11 +339,15 @@ fun UpdateComponentDetailDialog(
                         expanded = expanded,
                         onExpandedChange = { expanded = !expanded },
                     ) {
+                        val currentText = selectedDeviceDetail?.let {
+                            "${it.device?.name ?: "Thiết bị"} - ${it.area ?: "N/A"}"
+                        } ?: "Chọn thiết bị"
+                        
                         OutlinedTextField(
-                            value = selectedDeviceDetail?.area ?: "Chọn khu vực",
+                            value = currentText,
                             onValueChange = {},
                             readOnly = true,
-                            label = { Text("thiết bị") },
+                            label = { Text("Thiết bị & Khu vực") },
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                             modifier = Modifier.menuAnchor().fillMaxWidth(),
@@ -357,8 +359,9 @@ fun UpdateComponentDetailDialog(
                             onDismissRequest = { expanded = false },
                         ) {
                             deviceDetails.forEach { devDetail ->
+                                val itemText = "${devDetail.device?.name ?: "Thiết bị"} - ${devDetail.area ?: "N/A"}"
                                 DropdownMenuItem(
-                                    text = { Text(devDetail.area ?: "N/A") },
+                                    text = { Text(itemText) },
                                     onClick = {
                                         selectedDeviceDetail = devDetail
                                         expanded = false
@@ -427,11 +430,15 @@ fun CreateComponentDetailDialog(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded },
                 ) {
+                    val currentText = selectedDeviceDetail?.let {
+                        "${it.device?.name ?: "Thiết bị"} - ${it.area ?: "N/A"}"
+                    } ?: "Chọn thiết bị"
+
                     OutlinedTextField(
-                        value = selectedDeviceDetail?.area ?: "chọn thiết bị",
+                        value = currentText,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("chọn thiết bị") },
+                        label = { Text("Thiết bị & Khu vực") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                         modifier = Modifier.menuAnchor().fillMaxWidth(),
@@ -443,8 +450,9 @@ fun CreateComponentDetailDialog(
                         onDismissRequest = { expanded = false },
                     ) {
                         deviceDetails.forEach { devDetail ->
+                            val itemText = "${devDetail.device?.name ?: "Thiết bị"} - ${devDetail.area ?: "N/A"}"
                             DropdownMenuItem(
-                                text = { Text(devDetail.area ?: "N/A") },
+                                text = { Text(itemText) },
                                 onClick = {
                                     selectedDeviceDetail = devDetail
                                     expanded = false
@@ -462,8 +470,8 @@ fun CreateComponentDetailDialog(
                     onConfirm(
                         ComponentDetailCreateRequest(
                             componentId = componentId,
-                            price = price.toDoubleOrNull(),
-                            deviceDetailId = selectedDeviceDetail?.id,
+                            price = price.toDoubleOrNull() ?: 0.0,
+                            deviceDetailId = selectedDeviceDetail?.id ?: "",
                         ),
                     )
                 },
